@@ -35,6 +35,7 @@
       <HintPath>..\..\大漠\dmNet.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SBAPI">
       <HintPath>..\..\sb整合版\SBAPI.dll</HintPath>
     </Reference>
@@ -51,7 +52,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KSFPlugin.cs" />
+    <Compile Include="KSFPluginData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dm\dm.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dm\从系统里卸载大漠插件.bat" />
+    <None Include="dm\注册大漠插件到系统.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
