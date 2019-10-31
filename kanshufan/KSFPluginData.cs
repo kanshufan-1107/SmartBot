@@ -37,7 +37,7 @@ namespace SmartBotKit.Plugins.KSF
         public KSFPluginData()
         {
             this.Enabled = false;
-            this.Name = "KSF";
+            this.Name = "kanshufan";
         }
 
         //隐藏插件名称
