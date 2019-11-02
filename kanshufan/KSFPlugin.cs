@@ -119,13 +119,6 @@ namespace SmartBotKit.Plugins.KSF
         {
             if (PluginData.ManagerScreenshot && Bot.GetPlayerDatas().GetRank() == PluginData.Level)
             {
-                string path = Environment.CurrentDirectory
-                    + Path.DirectorySeparatorChar.ToString() + "LevelScreenshot"
-                    + Path.DirectorySeparatorChar.ToString();
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
                 string name =
                     DateTime.Now.Day + "-"
                     + DateTime.Now.Hour + "-"
@@ -133,10 +126,9 @@ namespace SmartBotKit.Plugins.KSF
                     + DateTime.Now.Second + "_"
                     + Bot.GetCurrentAccount() + "_"
                     + Bot.GetPlayerDatas().GetRank() + "级"
-                    + Bot.GetPlayerDatas().GetStars() + "星.png";
+                    + Bot.GetPlayerDatas().GetStars() + "星.jpg";
                 Thread.Sleep(PluginData.Delay);
-                Bot.Log("\r\n文件夹:" + path + "\r\n文件名:" + name);
-                ImgSave(path, name);
+                ImgSave(name);
             }
             base.OnVictory();
         }
@@ -361,33 +353,37 @@ namespace SmartBotKit.Plugins.KSF
         /// <summary>
         /// 截屏
         /// </summary>
-        /// <param name="path">文件夹地址</param>
         /// <param name="name">文件名</param>
-        private static void ImgSave(string path, string name)
+        private static void ImgSave(string name)
         {
-            if (!File.Exists(path + name))
+            string path = Environment.CurrentDirectory
+                    + Path.DirectorySeparatorChar.ToString() + "LevelScreenshot"
+                    + Path.DirectorySeparatorChar.ToString();
+            if (!Directory.Exists(path))
             {
-                File.Create(path + name);
-                Bot.Log("文件创建成功...");
+                Directory.CreateDirectory(path);
             }
+
             dmsoft dmsoft = new dmsoft();
-            int dm_ret = dmsoft.Reg("kanshufanb8857668706e4a29999f26d48a2a4df7", "");
-            if (dm_ret == 1)
+            int dm_ret = dmsoft.Reg("kanshufanb8857668706e4a29999f26d48a2a4df7", "0001");
+            if(dm_ret == 1)
             {
-                Bot.Log("注册大漠插件成功...");
+                Bot.Log("大漠插件收费功能注册成功...");
+                dmsoft.SetPath(path);
                 Bot.Log("大漠插件版本:" + dmsoft.Ver());
 
                 //获取句柄
                 var hwnd = dmsoft.FindWindow("UnityWndClass", "炉石传说");
-
                 //绑定窗口
-                dm_ret = dmsoft.BindWindowEx(hwnd, "dx2", "normal", "normal", "dx.public.active.api|dx.public.active.message", 103);
+                dm_ret = dmsoft.BindWindowEx(hwnd, "gdi", "normal", "normal", "", 0);
                 if (dm_ret == 1)
                 {
                     Bot.Log("炉石传说窗口绑定成功...");
+                    Bot.Log("\r\n文件详细路径:" + path + name);
                     //截屏
-                    dm_ret = dmsoft.CapturePng(0, 0, 2000, 2000, Path.Combine(path, name));
-                    if(dm_ret == 1)
+                    int dm_ret_ca = dmsoft.CaptureJpg(0,0,2000,2000,name,80);
+                    Bot.Log("截屏返回值是:" + dm_ret_ca);
+                    if (dm_ret_ca == 1)
                     {
                         Bot.Log("截屏成功...");
                     }
@@ -395,18 +391,17 @@ namespace SmartBotKit.Plugins.KSF
                     {
                         Bot.Log("截屏失败,错误码是:" + dmsoft.GetLastError());
                     }
+                    dmsoft.UnBindWindow();
                 }
                 else
                 {
                     Bot.Log("炉石传说窗口绑定失败,错误码是:" + dmsoft.GetLastError());
                 }
-
             }
             else
             {
-                Bot.Log("大漠插件付费功能注册失败...");
+                Bot.Log("大漠插件收费功能注册失败...");
             }
-
         }
     }
 }
