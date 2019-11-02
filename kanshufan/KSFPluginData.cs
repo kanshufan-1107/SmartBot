@@ -301,7 +301,7 @@ namespace SmartBotKit.Plugins.KSF
         }
 
         [Category("C.升级截图")]
-        [DisplayName("3.延时(单位:S)")]
+        [DisplayName("3.延时(单位:毫秒)")]
         public int Delay
         {
             get; set;

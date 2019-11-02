@@ -24,7 +24,7 @@ namespace SmartBotKit.Plugins.KSF
         /// </summary>
         public override void OnPluginCreated()
         {
-            if(IsEnabled())
+            if (IsEnabled())
             {
                 Bot.Log("KSF整合插件已初始化成功...");
             }
@@ -40,7 +40,7 @@ namespace SmartBotKit.Plugins.KSF
             string accountNow = Bot.GetCurrentAccount();
 
             //启用禁用互投
-            if(PluginData.ManagerAccount)
+            if (PluginData.ManagerAccount)
             {
                 if (accountNow == PluginData.Account1
                 || accountNow == PluginData.Account2
@@ -57,7 +57,7 @@ namespace SmartBotKit.Plugins.KSF
             }
 
             //选择卡组模式
-            if(PluginData.ManagerAutoConde)
+            if (PluginData.ManagerAutoConde)
             {
                 Bot.Log("选择卡组模式...");
                 ChooseDeckAndMode();
@@ -134,7 +134,7 @@ namespace SmartBotKit.Plugins.KSF
                     + Bot.GetCurrentAccount() + "_"
                     + Bot.GetPlayerDatas().GetRank() + "级"
                     + Bot.GetPlayerDatas().GetStars() + "星.png";
-                Thread.Sleep(PluginData.Delay * 1000);
+                Thread.Sleep(PluginData.Delay);
                 Bot.Log("\r\n文件夹:" + path + "\r\n文件名:" + name);
                 ImgSave(path, name);
             }
@@ -371,16 +371,42 @@ namespace SmartBotKit.Plugins.KSF
                 Bot.Log("文件创建成功...");
             }
             dmsoft dmsoft = new dmsoft();
-            Bot.Log("大漠插件版本:" + dmsoft.Ver());
+            int dm_ret = dmsoft.Reg("kanshufanb8857668706e4a29999f26d48a2a4df7", "");
+            if (dm_ret == 1)
+            {
+                Bot.Log("注册大漠插件成功...");
+                Bot.Log("大漠插件版本:" + dmsoft.Ver());
 
-            //获取句柄
-            var hwnd = dmsoft.FindWindow("UnityWndClass", "炉石传说");
+                //获取句柄
+                var hwnd = dmsoft.FindWindow("UnityWndClass", "炉石传说");
 
-            //绑定窗口
-            int dm_ret = dmsoft.BindWindow(hwnd, "dx2", "normal", "normal", 0);
+                //绑定窗口
+                dm_ret = dmsoft.BindWindowEx(hwnd, "dx2", "normal", "normal", "dx.public.active.api|dx.public.active.message", 103);
+                if (dm_ret == 1)
+                {
+                    Bot.Log("炉石传说窗口绑定成功...");
+                    //截屏
+                    dm_ret = dmsoft.CapturePng(0, 0, 2000, 2000, Path.Combine(path, name));
+                    if(dm_ret == 1)
+                    {
+                        Bot.Log("截屏成功...");
+                    }
+                    else
+                    {
+                        Bot.Log("截屏失败,错误码是:" + dmsoft.GetLastError());
+                    }
+                }
+                else
+                {
+                    Bot.Log("炉石传说窗口绑定失败,错误码是:" + dmsoft.GetLastError());
+                }
 
-            //截屏
-            dmsoft.CapturePng(0, 0, 2000, 2000, Path.Combine(path, name));
+            }
+            else
+            {
+                Bot.Log("大漠插件付费功能注册失败...");
+            }
+
         }
     }
 }
