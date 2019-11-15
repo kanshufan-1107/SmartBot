@@ -33,6 +33,8 @@ namespace SmartBotKit.Plugins.KSF
 
         private int Level_;
 
+        private int RankLevel_;
+
         //初始化
         public KSFPluginData()
         {
@@ -98,6 +100,36 @@ namespace SmartBotKit.Plugins.KSF
         [Category("B.互投")]
         [DisplayName("a2.是否开启练级模式(若该职业1000胜刷满,未到\r\n60级,还会继续该职业)")]
         public bool LevelUp { get; set; }
+
+        [Category("B.互投")]
+        [DisplayName("a3.互投模式")]
+        [ItemsSource(typeof(Mode))]
+        public string AutoConcodeMode { get; set; }
+
+        [Category("B.互投")]
+        [DisplayName("a4.互投上限等级(最大50级，最小1级)")]
+        public int RankLevel
+        {
+            get
+            {
+                return this.RankLevel_;
+            }
+            set
+            {
+                if (value < 1)
+                {
+                    RankLevel_ = 1;
+                    return;
+                }
+                else if (value > 50)
+                {
+                    RankLevel_ = 50;
+                    return;
+                }
+
+                RankLevel_ = value;
+            }
+        }
 
         [Category("B.互投")]
         [DisplayName("b1.德鲁伊刷千胜卡组")]
@@ -518,6 +550,21 @@ namespace SmartBotKit.Plugins.KSF
                 Bot.Log("术士卡组查询出错...");
             }
             return itemsTemp;
+        }
+    }
+
+    //互投模式
+    public sealed class Mode : IItemsSource
+    {
+        public ItemCollection GetValues()
+        {
+            ItemCollection items = new ItemCollection();
+            items.Add(Enum.GetName(typeof(Bot.Mode),Bot.Mode.None), Enum.GetName(typeof(Bot.Mode), Bot.Mode.None));
+            items.Add(Enum.GetName(typeof(Bot.Mode), Bot.Mode.RankedStandard), Enum.GetName(typeof(Bot.Mode), Bot.Mode.RankedStandard));
+            items.Add(Enum.GetName(typeof(Bot.Mode), Bot.Mode.RankedWild), Enum.GetName(typeof(Bot.Mode), Bot.Mode.RankedWild));
+            items.Add(Enum.GetName(typeof(Bot.Mode), Bot.Mode.UnrankedStandard), Enum.GetName(typeof(Bot.Mode), Bot.Mode.UnrankedStandard));
+            items.Add(Enum.GetName(typeof(Bot.Mode), Bot.Mode.UnrankedWild), Enum.GetName(typeof(Bot.Mode), Bot.Mode.UnrankedWild));
+            return items;
         }
     }
 }

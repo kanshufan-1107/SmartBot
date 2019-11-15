@@ -32,12 +32,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="dmNet">
-      <HintPath>E:\昆特牌组卡工具\dmNet.dll</HintPath>
+      <HintPath>..\..\dmNet.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SBAPI">
-      <HintPath>..\..\sb整合版\SBAPI.dll</HintPath>
+      <HintPath>E:\SB\SBAPI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,7 +48,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\sb整合版\Xceed.Wpf.Toolkit.dll</HintPath>
+      <HintPath>E:\SB\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

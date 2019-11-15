@@ -133,6 +133,11 @@ namespace SmartBotKit.Plugins.KSF
             base.OnVictory();
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
+
         /// <summary>
         /// 选择卡组模式
         /// </summary>
@@ -158,7 +163,7 @@ namespace SmartBotKit.Plugins.KSF
 
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -176,7 +181,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -194,7 +199,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -212,7 +217,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -230,7 +235,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -248,7 +253,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -266,7 +271,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                Process(wins, deckName, level, PluginData.LevelUp);
+                                Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                             }
                             break;
                         }
@@ -283,7 +288,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -301,7 +306,7 @@ namespace SmartBotKit.Plugins.KSF
                             Deck deck = Bot.GetDecks().Find(x => x.Name == deckName);
                             if (deck != null)
                             {
-                                bool flag = Process(wins, deckName, level, PluginData.LevelUp);
+                                bool flag = Process(wins, deckName, level, PluginData.LevelUp, PluginData.AutoConcodeMode,PluginData.RankLevel);
                                 if (flag) return;
                             }
                             break;
@@ -318,13 +323,28 @@ namespace SmartBotKit.Plugins.KSF
         /// <param name="deckName">卡组名</param>
         /// <param name="level">当前英雄等级</param>
         /// <param name="levelUp">是否还提升等级</param>
-        public static bool Process(int wins, string deckName, int level, bool levelUp)
+        public static bool Process(int wins, string deckName, int level, bool levelUp, String acmode, int rankLevel)
         {
+            //设置投降最高等级
+            Bot.SetAutoConcede(true);
+            Bot.SetAutoConcedeMaxRank(rankLevel);
+
             //胜场
             if (wins < 1000)
             {
                 //改变模式
-                Bot.ChangeMode(Bot.Mode.RankedStandard);
+                Bot.Mode md = (Bot.Mode)Enum.Parse(typeof(Bot.Mode), acmode);
+
+                if (md == Bot.Mode.None)
+                {
+                    Bot.ChangeMode(Bot.Mode.RankedStandard);
+                    Bot.Log("模式:标准");
+                }
+                else
+                {
+                    Bot.ChangeMode(md);
+                    Bot.Log("模式:" + acmode);
+                }
 
                 //改变卡组
                 Bot.ChangeDeck(deckName);
@@ -336,7 +356,16 @@ namespace SmartBotKit.Plugins.KSF
             else if (level < 60 && levelUp)
             {
                 //改变模式
-                Bot.ChangeMode(Bot.Mode.RankedStandard);
+                Bot.Mode md = (Bot.Mode)Enum.Parse(typeof(Bot.Mode), acmode);
+
+                if (md == Bot.Mode.None)
+                {
+                    Bot.ChangeMode(Bot.Mode.RankedStandard);
+                }
+                else
+                {
+                    Bot.ChangeMode(md);
+                }
 
                 //改变卡组
                 Bot.ChangeDeck(deckName);
@@ -366,7 +395,7 @@ namespace SmartBotKit.Plugins.KSF
 
             dmsoft dmsoft = new dmsoft();
             int dm_ret = dmsoft.Reg("kanshufanb8857668706e4a29999f26d48a2a4df7", "0001");
-            if(dm_ret == 1)
+            if (dm_ret == 1)
             {
                 Bot.Log("大漠插件收费功能注册成功...");
                 dmsoft.SetPath(path);
@@ -381,7 +410,7 @@ namespace SmartBotKit.Plugins.KSF
                     Bot.Log("炉石传说窗口绑定成功...");
                     Bot.Log("\r\n文件详细路径:" + path + name);
                     //截屏
-                    int dm_ret_ca = dmsoft.CaptureJpg(0,0,2000,2000,name,80);
+                    int dm_ret_ca = dmsoft.CaptureJpg(0, 0, 2000, 2000, name, 80);
                     Bot.Log("截屏返回值是:" + dm_ret_ca);
                     if (dm_ret_ca == 1)
                     {
